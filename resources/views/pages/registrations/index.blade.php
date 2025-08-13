@@ -98,31 +98,56 @@
       <form action="{{ route('registrations.store') }}" method="POST">
         @csrf
         <div class="modal-body">
+          <!-- Error Messages -->
+          @if($errors->any())
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="patient_id" class="form-label">Pasien</label>
-                <select class="form-select" id="patient_id" name="patient_id" required>
+                <label for="patient_id" class="form-label">Pasien <span class="text-danger">*</span></label>
+                <select class="form-select @error('patient_id') is-invalid @enderror" id="patient_id" name="patient_id" required>
                   <option value="">Pilih Pasien</option>
                   @foreach($patients as $patient)
-                    <option value="{{ $patient->id }}">{{ $patient->name }} - {{ $patient->no_rekam_medis }}</option>
+                    <option value="{{ $patient->id }}" {{ old('patient_id') == $patient->id ? 'selected' : '' }}>
+                      {{ $patient->name }} - {{ $patient->no_rekam_medis }}
+                    </option>
                   @endforeach
                 </select>
+                @error('patient_id')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
               <div class="mb-3">
-                <label for="doctor_id" class="form-label">Dokter</label>
-                <select class="form-select" id="doctor_id" name="doctor_id" required>
+                <label for="doctor_id" class="form-label">Dokter <span class="text-danger">*</span></label>
+                <select class="form-select @error('doctor_id') is-invalid @enderror" id="doctor_id" name="doctor_id" required>
                   <option value="">Pilih Dokter</option>
                   @foreach($doctors as $doctor)
-                    <option value="{{ $doctor->id }}">Dr. {{ $doctor->name }} - {{ $doctor->spesialis }}</option>
+                    <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
+                      Dr. {{ $doctor->name }} - {{ $doctor->spesialis }}
+                    </option>
                   @endforeach
                 </select>
+                @error('doctor_id')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <small class="text-muted">Pastikan dokter memiliki jadwal hari ini</small>
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="keterangan" class="form-label">Keterangan</label>
-                <textarea class="form-control" id="keterangan" name="keterangan" rows="4" placeholder="Keluhan atau keterangan tambahan..."></textarea>
+                <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan" rows="4" placeholder="Keluhan atau keterangan tambahan...">{{ old('keterangan') }}</textarea>
+                @error('keterangan')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
             </div>
           </div>
@@ -193,3 +218,14 @@
 
 <!-- / Konten -->
 @endsection
+
+@push('scripts')
+<script>
+// Auto-show modal if there are errors
+@if($errors->any())
+  $(document).ready(function() {
+    $('#createRegistrationModal').modal('show');
+  });
+@endif
+</script>
+@endpush
