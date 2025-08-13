@@ -1,10 +1,13 @@
         <!-- Menu -->
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style="background-color: #075308 !important">
-            <div class="app-brand demo m-0 border-bottom" style="background-color: #075308 !important">
+            <div class="app-brand demo m-0 border-bottom" style="background-color: #075308 !important; font-family: 'Poppins', sans-serif;">
               <a href="#" class="app-brand-link">
                 <span class="app-brand-logo demo">
                   <i class="bx bx-spa" style="font-size: 2rem; color: white;"></i>
+                </span>
+                <span class="app-brand-text demo menu-text fw-bolder ms-2" style="color: white; font-size: 1.2rem; text-transform: uppercase;">
+                  Klinik Tong Fang
                 </span>
               </a>
 
