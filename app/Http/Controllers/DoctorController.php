@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Doctor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DoctorController extends Controller
 {
     public function index()
     {
-        $doctors = Doctor::orderBy('created_at', 'desc')->get();
+        if(Auth::user()->userDetails->role == 'admin'){
+            $doctors = Doctor::orderBy('created_at', 'desc')->get();
+        } else {
+            $doctors = Doctor::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        }
+
         return view('pages.doctors.index', compact('doctors'));
     }
 

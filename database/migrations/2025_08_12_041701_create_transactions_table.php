@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('queue_id');
+            $table->foreignId('queue_id')->nullable();
             $table->foreignId('user_id');
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->string('status')->default('pending');

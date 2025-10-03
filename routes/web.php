@@ -8,6 +8,7 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\DoctorScheduleController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +41,11 @@ Route::middleware('auth')->group(function () {
     // Transaction routes
     Route::resource('transactions', TransactionController::class);
     Route::get('/transactions/{transaction}/show', [TransactionController::class, 'show'])->name('transactions.show');
+    Route::get('/transactions-product-buy', [TransactionController::class, 'productBuy'])->name('transactions.productBuy');
+
+    // Product routes
+    Route::resource('products', ProductController::class);
+    Route::post('/products/buy', [ProductController::class, 'buy'])->name('products.buy');
 });
 
 require __DIR__.'/auth.php';

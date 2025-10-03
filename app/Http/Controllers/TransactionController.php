@@ -12,9 +12,18 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::with(['queue.patient', 'queue.doctor', 'user', 'transactionDetails'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        if(Auth::user()->userDetails->role == 'admin'){
+            $transactions = Transaction::whereNotNull('queue_id')
+                ->with(['queue.patient', 'queue.doctor', 'user', 'transactionDetails'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            $transactions = Transaction::whereNotNull('queue_id')
+                ->where('user_id', Auth::user()->id)
+                ->with(['queue.patient', 'queue.doctor', 'user', 'transactionDetails'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
 
         $queues = Queue::where('status', 'completed')
             ->whereDoesntHave('transaction')
@@ -132,5 +141,24 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::with(['queue.patient', 'queue.doctor', 'user', 'transactionDetails'])->findOrFail($id);
         return view('pages.transactions.show', compact('transaction'));
+    }
+
+    public function productBuy()
+    {
+        // Ambil transaksi yang ada produk saja
+        if(Auth::user()->userDetails->role == 'admin'){
+            $transactions = Transaction::whereNull('queue_id')
+                ->with(['user', 'transactionDetails'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            $transactions = Transaction::whereNull('queue_id')
+                ->where('user_id', Auth::user()->id)
+                ->with(['user', 'transactionDetails'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+
+        return view('pages.products.productBuy', compact('transactions'));
     }
 }

@@ -27,6 +27,7 @@
                 </a>
               </li>
 
+              @if (Auth::user()->userDetails->role == 'admin')
               <!-- Users -->
               <li class="menu-item {{ Route::is('users.index') ? 'active' : '' }}">
                 <a href="{{ route('users.index') }}" class="menu-link text-white">
@@ -34,6 +35,8 @@
                   <div data-i18n="Users">Admin</div>
                 </a>
               </li>
+              @endif
+
 
               <!-- Patients -->
               <li class="menu-item {{ Route::is('patients.*') ? 'active' : '' }}">
@@ -43,6 +46,7 @@
                 </a>
               </li>
 
+              @if (Auth::user()->userDetails->role == 'admin' || Auth::user()->userDetails->role == 'doctor')
               <!-- Doctors -->
               <li class="menu-item {{ Route::is('doctors.*') ? 'active' : '' }}">
                 <a href="{{ route('doctors.index') }}" class="menu-link text-white">
@@ -50,14 +54,14 @@
                   <div data-i18n="Doctors">Dokter</div>
                 </a>
               </li>
-
               <!-- Schedules -->
               <li class="menu-item {{ Route::is('schedules.*') ? 'active' : '' }}">
-                <a href="{{ route('schedules.index') }}" class="menu-link text-white">
-                  <i class="menu-icon tf-icons bx bx-calendar"></i>
-                  <div data-i18n="Schedules">Jadwal</div>
-                </a>
-              </li>
+                  <a href="{{ route('schedules.index') }}" class="menu-link text-white">
+                      <i class="menu-icon tf-icons bx bx-calendar"></i>
+                      <div data-i18n="Schedules">Jadwal</div>
+                    </a>
+                </li>
+                @endif
 
               <!-- Registrations -->
               <li class="menu-item {{ Route::is('registrations.*') ? 'active' : '' }}">
@@ -68,10 +72,26 @@
               </li>
 
               <!-- Transactions -->
-              <li class="menu-item {{ Route::is('transactions.*') ? 'active' : '' }}">
+              <li class="menu-item {{ Route::is('transactions.index') ? 'active' : '' }}">
                 <a href="{{ route('transactions.index') }}" class="menu-link text-white">
                   <i class="menu-icon tf-icons bx bx-receipt"></i>
                   <div data-i18n="Transactions">Transaksi</div>
+                </a>
+              </li>
+
+              <!-- Products -->
+              <li class="menu-item {{ Route::is('products.*') ? 'active' : '' }}">
+                <a href="{{ route('products.index') }}" class="menu-link text-white">
+                  <i class="menu-icon tf-icons bx bx-shopping-bag"></i>
+                  <div data-i18n="Products">Produk</div>
+                </a>
+              </li>
+
+              <!-- Riwayat Pembelian Produk -->
+              <li class="menu-item {{ Route::is('transactions.productBuy') ? 'active' : '' }}">
+                <a href="{{ route('transactions.productBuy') }}" class="menu-link text-white">
+                  <i class="menu-icon tf-icons bx bx-cart"></i>
+                  <div data-i18n="ProductBuy">Riwayat Pembelian</div>
                 </a>
               </li>
             </ul>

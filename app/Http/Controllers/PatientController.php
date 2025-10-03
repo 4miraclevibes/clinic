@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PatientController extends Controller
 {
     public function index()
     {
-        $patients = Patient::orderBy('created_at', 'desc')->get();
+        if(Auth::user()->userDetails->role == 'admin'){
+            $patients = Patient::orderBy('created_at', 'desc')->get();
+        } else {
+            $patients = Patient::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        }
+
         return view('pages.patients.index', compact('patients'));
     }
 
@@ -23,7 +29,10 @@ class PatientController extends Controller
             'alamat' => 'required|string',
         ]);
 
-        Patient::create($request->all());
+        $data = $request->all();
+        $data['user_id'] = Auth::user()->id;
+
+        Patient::create($data);
 
         return redirect()->route('patients.index')->with('success', 'Pasien berhasil ditambahkan');
     }

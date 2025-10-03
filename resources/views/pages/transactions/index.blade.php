@@ -36,24 +36,24 @@
             <td>
               <div class="d-flex align-items-center">
                 <div class="avatar avatar-sm me-2">
-                  <span class="avatar-initial rounded bg-label-primary">{{ substr($transaction->queue->patient->name, 0, 1) }}</span>
+                  <span class="avatar-initial rounded bg-label-primary">{{ substr($transaction->queue->patient->name ?? '-', 0, 1) }}</span>
                 </div>
                 <div>
-                  <span class="fw-semibold">{{ $transaction->queue->patient->name }}</span>
+                  <span class="fw-semibold">{{ $transaction->queue->patient->name ?? '-' }}</span>
                   <br>
-                  <small class="text-muted">Antrian #{{ $transaction->queue->no_antrian }}</small>
+                  <small class="text-muted">Antrian #{{ $transaction->queue->no_antrian ?? '-' }}</small>
                 </div>
               </div>
             </td>
             <td>
               <div class="d-flex align-items-center">
                 <div class="avatar avatar-sm me-2">
-                  <span class="avatar-initial rounded bg-label-success">{{ substr($transaction->queue->doctor->name, 0, 1) }}</span>
+                  <span class="avatar-initial rounded bg-label-success">{{ substr($transaction->queue->doctor->name ?? '-', 0, 1) }}</span>
                 </div>
                 <div>
-                  <span class="fw-semibold">Dr. {{ $transaction->queue->doctor->name }}</span>
+                  <span class="fw-semibold">Dr. {{ $transaction->queue->doctor->name ?? '-' }}</span>
                   <br>
-                  <small class="text-muted">{{ $transaction->queue->doctor->spesialis }}</small>
+                  <small class="text-muted">{{ $transaction->queue->doctor->spesialis ?? '-' }}</small>
                 </div>
               </div>
             </td>
