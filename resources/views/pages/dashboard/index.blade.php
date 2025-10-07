@@ -314,8 +314,12 @@
               <i class="bx bx-export me-1"></i>Export
             </button>
             <div class="dropdown-menu" aria-labelledby="statistikBulanan">
-              <a class="dropdown-item" href="javascript:void(0);">PDF</a>
-              <a class="dropdown-item" href="javascript:void(0);">Excel</a>
+              <a class="dropdown-item" href="{{ route('export.pdf') }}">
+                <i class="bx bx-file-pdf me-2"></i>Export PDF
+              </a>
+              <a class="dropdown-item" href="{{ route('export.excel') }}">
+                <i class="bx bx-file me-2"></i>Export Excel
+              </a>
             </div>
           </div>
         </div>

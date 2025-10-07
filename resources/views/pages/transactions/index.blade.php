@@ -4,10 +4,23 @@
 <!-- Konten -->
 <div class="container-xxl flex-grow-1 container-p-y">
   <div class="card">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
       <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createTransactionModal">
         Tambah Transaksi
       </button>
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="exportTransactions" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="bx bx-export me-1"></i>Export
+        </button>
+        <div class="dropdown-menu" aria-labelledby="exportTransactions">
+          <a class="dropdown-item" href="{{ route('export.transactions.pdf') }}">
+            <i class="bx bx-file-pdf me-2"></i>Export PDF
+          </a>
+          <a class="dropdown-item" href="{{ route('export.transactions.excel') }}">
+            <i class="bx bx-file me-2"></i>Export Excel
+          </a>
+        </div>
+      </div>
     </div>
   </div>
   <div class="card mt-2">

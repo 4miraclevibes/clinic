@@ -12,7 +12,7 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        if(Auth::user()->userDetails->role == 'admin'){
+        if(Auth::user()->userDetails->role == 'admin' || Auth::user()->userDetails->role == 'doctor'){
             $transactions = Transaction::whereNotNull('queue_id')
                 ->with(['queue.patient', 'queue.doctor', 'user', 'transactionDetails'])
                 ->orderBy('created_at', 'desc')

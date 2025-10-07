@@ -30,46 +30,50 @@ class RegistrationController extends Controller
             $request->validate([
                 'patient_id' => 'required|exists:patients,id',
                 'doctor_id' => 'required|exists:doctors,id',
+                'tanggal' => 'required|date|after_or_equal:today',
                 'keterangan' => 'nullable|string',
             ]);
 
-            // Cek apakah dokter memiliki jadwal hari ini
-            $todaySchedule = DoctorSchedule::where('doctor_id', $request->doctor_id)
-                ->where('date', Carbon::today())
+            $selectedDate = Carbon::parse($request->tanggal);
+
+            // Cek apakah dokter memiliki jadwal pada tanggal yang dipilih
+            $schedule = DoctorSchedule::where('doctor_id', $request->doctor_id)
+                ->where('date', $selectedDate->format('Y-m-d'))
                 ->where('status', 'available')
                 ->first();
 
-            if (!$todaySchedule) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors(['doctor_id' => 'Dokter tidak memiliki jadwal hari ini. Silakan pilih dokter lain atau buat jadwal terlebih dahulu.']);
-            }
+            // KODE INI DAPAT DIUNCOMMENT JIKA INGIN MEMAKSA PENGECEKAN JADWAL DOKTER
+            // if (!$schedule) {
+            //     return redirect()->back()
+            //         ->withInput()
+            //         ->withErrors(['doctor_id' => 'Dokter tidak memiliki jadwal pada tanggal ' . $selectedDate->format('d/m/Y') . '. Silakan pilih dokter lain atau buat jadwal terlebih dahulu.']);
+            // }
 
-            // Cek apakah pasien sudah ada dalam antrian hari ini
+            // Cek apakah pasien sudah ada dalam antrian pada tanggal yang dipilih
             $existingQueue = Queue::where('patient_id', $request->patient_id)
-                ->whereDate('created_at', Carbon::today())
+                ->whereDate('created_at', $selectedDate->format('Y-m-d'))
                 ->first();
 
             if ($existingQueue) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['patient_id' => 'Pasien sudah terdaftar dalam antrian hari ini. Satu pasien hanya boleh mendaftar sekali per hari.']);
+                    ->withErrors(['patient_id' => 'Pasien sudah terdaftar dalam antrian pada tanggal ' . $selectedDate->format('d/m/Y') . '. Satu pasien hanya boleh mendaftar sekali per hari.']);
             }
 
-            // Cek apakah dokter sudah terlalu banyak antrian hari ini (opsional)
-            $doctorTodayQueues = Queue::where('doctor_id', $request->doctor_id)
-                ->whereDate('created_at', Carbon::today())
+            // Cek apakah dokter sudah terlalu banyak antrian pada tanggal yang dipilih (opsional)
+            $doctorDateQueues = Queue::where('doctor_id', $request->doctor_id)
+                ->whereDate('created_at', $selectedDate->format('Y-m-d'))
                 ->count();
 
-            if ($doctorTodayQueues >= 20) { // Batas maksimal 20 antrian per dokter per hari
+            if ($doctorDateQueues >= 20) { // Batas maksimal 20 antrian per dokter per hari
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['doctor_id' => 'Dokter sudah mencapai batas maksimal antrian hari ini (20 pasien). Silakan pilih dokter lain atau daftar besok.']);
+                    ->withErrors(['doctor_id' => 'Dokter sudah mencapai batas maksimal antrian pada tanggal ' . $selectedDate->format('d/m/Y') . ' (20 pasien). Silakan pilih dokter lain atau tanggal lain.']);
             }
 
-            // Generate nomor antrian
-            $todayQueues = Queue::whereDate('created_at', Carbon::today())->count();
-            $noAntrian = $todayQueues + 1;
+            // Generate nomor antrian untuk tanggal yang dipilih
+            $dateQueues = Queue::whereDate('created_at', $selectedDate->format('Y-m-d'))->count();
+            $noAntrian = $dateQueues + 1;
 
             Queue::create([
                 'patient_id' => $request->patient_id,
@@ -78,9 +82,10 @@ class RegistrationController extends Controller
                 'no_antrian' => $noAntrian,
                 'status' => 'pending',
                 'keterangan' => $request->keterangan,
+                'created_at' => $selectedDate,
             ]);
 
-            return redirect()->route('registrations.index')->with('success', 'Pendaftaran berhasil ditambahkan dengan nomor antrian #' . $noAntrian);
+            return redirect()->route('registrations.index')->with('success', 'Pendaftaran berhasil ditambahkan dengan nomor antrian #' . $noAntrian . ' untuk tanggal ' . $selectedDate->format('d/m/Y'));
 
         } catch (\Exception $e) {
             return redirect()->back()

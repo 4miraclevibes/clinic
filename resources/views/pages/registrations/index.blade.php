@@ -138,7 +138,15 @@
                 @error('doctor_id')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
-                <small class="text-muted">Pastikan dokter memiliki jadwal hari ini</small>
+                <small class="text-muted">Dokter dapat menerima pasien walaupun belum ada jadwal resmi</small>
+              </div>
+              <div class="mb-3">
+                <label for="tanggal" class="form-label">Tanggal Pendaftaran <span class="text-danger">*</span></label>
+                <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal" name="tanggal" value="{{ old('tanggal', date('Y-m-d')) }}" min="{{ date('Y-m-d') }}" required>
+                @error('tanggal')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <small class="text-muted">Pilih tanggal untuk pendaftaran</small>
               </div>
             </div>
             <div class="col-md-6">
