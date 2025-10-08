@@ -47,7 +47,7 @@
             <td>
               <div class="d-flex align-items-center">
                 <div class="avatar avatar-sm me-2">
-                  <span class="avatar-initial rounded bg-label-success">{{ substr($queue->doctor->name, 0, 1) }}</span>
+                  <span class="avatar-initial rounded bg-label-success">{{ substr($queue->doctor->name ?? '-', 0, 1) }}</span>
                 </div>
                 <div>
                   <span class="fw-semibold">Dr. {{ $queue->doctor->name }}</span>
